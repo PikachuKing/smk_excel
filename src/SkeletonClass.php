@@ -1,6 +1,6 @@
 <?php
 
-namespace LkyVendor\SmkExcel;
+namespace lky_vendor\smk_excel;
 
 class SkeletonClass
 {

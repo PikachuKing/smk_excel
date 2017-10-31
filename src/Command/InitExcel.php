@@ -1,6 +1,6 @@
 <?php
 
-namespace LkyVendor\SmkExcel\Command;
+namespace lky_vendor\smk_excel\Command;
 
 use File;
 use Illuminate\Console\Command;

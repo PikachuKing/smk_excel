@@ -6,7 +6,7 @@
  * Time: 下午 3:21
  */
 
-namespace LkyVendor\SmkExcel\Temp;
+namespace lky_vendor\smk_excel\Temp;
 
 
 class RouteTemp
