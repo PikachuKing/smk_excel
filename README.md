@@ -1,83 +1,57 @@
-# :package_name
-
-[![Latest Version on Packagist][ico-version]][link-packagist]
-[![Software License][ico-license]](LICENSE.md)
-[![Build Status][ico-travis]][link-travis]
-[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
-[![Quality Score][ico-code-quality]][link-code-quality]
-[![Total Downloads][ico-downloads]][link-downloads]
-
-**Note:** Replace ```:author_name``` ```:author_username``` ```:author_website``` ```:author_email``` ```:vendor``` ```:package_name``` ```:package_description``` with their correct values in [README.md](README.md), [CHANGELOG.md](CHANGELOG.md), [CONTRIBUTING.md](CONTRIBUTING.md), [LICENSE.md](LICENSE.md) and [composer.json](composer.json) files, then delete this line. You can run `$ php prefill.php` in the command line to make all replacements at once. Delete the file prefill.php as well.
-
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what
-PSRs you support to avoid any confusion with users and contributors.
-
-## Structure
-
-If any of the following are applicable to your project, then the directory structure should follow industry best practises by being named the following.
-
-```
-bin/        
-config/
-src/
-tests/
-vendor/
-```
+## Smk_Excel
+用户导入Excel,要求laravel版本最低:5.3
 
 
-## Install
-
-Via Composer
-
+# 导入方法
+###
+1.1:首先引入laravel Excel包(注意依次执行):
 ``` bash
-$ composer require :vendor/:package_name
+composer require maatwebsite/excel ~2.0.0;
+composer require anlutro/curl;
+composer require lky_vendor/smk_excel 1.0.x-dev;
 ```
-
-## Usage
-
-``` php
-$skeleton = new League\Skeleton();
-echo $skeleton->echoPhrase('Hello, League!');
-```
-
-## Change log
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Testing
-
+### 
+1.2:在config/app.php的provider数组中添加: 
 ``` bash
-$ composer test
+Maatwebsite\Excel\ExcelServiceProvider::class,
+lky_vendor\smk_excel\smk_excelServiceProvider::class,
 ```
 
-## Contributing
+###
+1.3:在config/app.php的aliases数组中添加:
+``` bash
+'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+'cURL' => anlutro\cURL\Laravel\cURL::class,
+```
+###
+1.4:执行以下命令配置你的excel:
+``` bash
+php artisan vendor:publish --provider="Maatwebsite\Excel\ExcelServiceProvider";
+php artisan excel:init
+```
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) and [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) for details.
+# 使用方法
+1:你需要自定义一个路由返回你需要导入的数组:
+``` bash
+ $p = array();
+        $p[] = array(
+            'name' => 'name',//字段名称
+            'type' => array( //字段需要的验证,目前只有 string,int,需要的可以加
+                'string'
+            ),
+            'self_verify' => '',//如果需要自己验证,此处就填写你自己验证的地址,你会收到一个id和一个值来验证
+            'can_be_null' => false,//这个字段是否能为空
+            'chinese' => "姓名", //字段显示的中文名
+            'preg_err_msg' => '正则表达式验证不通过',//如果验证不通过显示的中文
+            'preg' => '',//可以支持正则表达式,如果为空则不填写
+            'id' => 1 //数组中唯一的ID,这个ID是你自己分配的,必须要是唯一
+        );
+ return response()->json($p);//最后把这个json返回出来
+```
 
-## Security
+2:你需要自定义另外一个路由存入导入的数据:<br>
 
-If you discover any security related issues, please email :author_email instead of using the issue tracker.
-
-## Credits
-
-- [:author_name][link-author]
-- [All Contributors][link-contributors]
-
-## License
-
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-
-[ico-version]: https://img.shields.io/packagist/v/:vendor/:package_name.svg?style=flat-square
-[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/:vendor/:package_name/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/:vendor/:package_name.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/:vendor/:package_name.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/:vendor/:package_name.svg?style=flat-square
-
-[link-packagist]: https://packagist.org/packages/:vendor/:package_name
-[link-travis]: https://travis-ci.org/:vendor/:package_name
-[link-scrutinizer]: https://scrutinizer-ci.com/g/:vendor/:package_name/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/:vendor/:package_name
-[link-downloads]: https://packagist.org/packages/:vendor/:package_name
-[link-author]: https://github.com/:author_username
-[link-contributors]: ../../contributors
+注意:Excel数据是一行一行传递给你这个路由的
+``` bash
+$val = $req->input('id');//此处的ID为你定义的唯一ID
+```
