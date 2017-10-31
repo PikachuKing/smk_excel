@@ -8,7 +8,7 @@
 ``` bash
 composer require maatwebsite/excel ~2.0.0;
 composer require anlutro/curl;
-composer require lky_vendor/smk_excel 1.0.x-dev;
+composer require lky_vendor/smk_excel dev-master;
 ```
 ### 
 1.2:在config/app.php的provider数组中添加: 
