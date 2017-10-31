@@ -1,12 +1,12 @@
 {
-    "name": "LkyVendor/SmkExcel",
+    "name": "LkyVendor/smk_excel",
     "type": "library",
     "description": "Import Excel to database",
     "keywords": [
         "LkyVendor",
-        "SmkExcel"
+        "smk_excel"
     ],
-    "homepage": "https://github.com/gitlky/LkyVendor",
+    "homepage": "https://github.com/gitlky/smk_excel",
     "license": "MIT",
     "authors": [
         {
@@ -26,12 +26,12 @@
     },
     "autoload": {
         "psr-4": {
-            "LkyVendor\\SmkExcel\\": "src"
+            "LkyVendor\\smk_excel\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "LkyVendor\\SmkExcel\\": "tests"
+            "LkyVendor\\smk_excel\\": "tests"
         }
     },
     "scripts": {
