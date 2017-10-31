@@ -14,7 +14,7 @@ composer require lky_vendor/smk_excel 1.0.x-dev;
 1.2:在config/app.php的provider数组中添加: 
 ``` bash
 Maatwebsite\Excel\ExcelServiceProvider::class,
-LkyVendor\SmkExcel\SmkExcelServiceProvider::class,
+lky_vendor\smk_excel\smk_excelServiceProvider::class,
 ```
 
 ###
