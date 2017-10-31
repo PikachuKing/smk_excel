@@ -29,12 +29,12 @@
     },
     "autoload": {
         "psr-4": {
-            "lky_vendor\\smk_excel": "src"
+            "lky_vendor\\smk_excel\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "lky_vendor\\smk_excel": "tests"
+            "lky_vendor\\smk_excel\\": "tests"
         }
     },
     "scripts": {
