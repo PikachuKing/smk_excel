@@ -55,30 +55,6 @@ class InitExcel extends Command
         };
     }
 
-    private function mkdir($path){
-        $p = explode('/views',$path);
-        $yy = "";
-        foreach ($p as $key=>$x){
-            if($key==0){
-                $yy.=$x.'/views';
-            }else{
-                $mm = explode('/',$x);
-                foreach ($mm as $kk=>$m){
-                    if($kk==0){
-                        $yy.=$m;
-                    }else{
-                        $yy.='/'.$m;
-                    }
-                }
-                $this->line($yy);
-                if(!File::isDirectory($yy)||!File::exists($yy)){
-                    File::makeDirectory($yy,  $mode = 0777, $recursive = false);
-                }
-            }
-
-        }
-    }
-
     private function write($path,$content,$is_append=false){
         if(!File::exists($path)){
             $this->line("文件不存在");
