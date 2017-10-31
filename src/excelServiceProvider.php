@@ -1,11 +1,11 @@
 <?php
 
-namespace lky_vendor\smk_excel;
+namespace lky_vendor\excel;
 
 use Illuminate\Support\ServiceProvider;
 use lky_vendor\smk_excel\Command\InitExcel;
 
-class smk_excelServiceProvider extends ServiceProvider
+class excelServiceProvider extends ServiceProvider
 {
     /**
      * Perform post-registration booting of services.
