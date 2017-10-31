@@ -4,7 +4,7 @@ namespace lky_vendor\smk_excel\Command;
 
 use File;
 use Illuminate\Console\Command;
-use LkyVendor\SmkExcel\Temp\RouteTemp;
+use lky_vendor\smk_excel\Temp\RouteTemp;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,32 +38,44 @@ class InitExcel extends Command
 
             //拷贝视图
             $patt = dirname(__FILE__) .'/SmkVendor/Index.blade.php';
-            $dir =  resource_path('views/SmkVendor/Excel');
-            $this->line($dir);
-            if(!File::isDirectory($dir)||!File::exists($dir)){
-                //File::makeDirectory($dir,  $mode = 0777, $recursive = false);
-                $this->mkdir($dir);
-            }
-            File::copy($patt,$dir.'/Index.blade.php');
+            $dir =  resource_path('views/SmkVendor');
 
+            if(!File::isDirectory($dir)||!File::exists($dir)){
+                File::makeDirectory($dir,  $mode = 0777, $recursive = false);
+            }
+            $this->line($dir);
+            $dir =  resource_path('views/SmkVendor/Excel');
+            if(!File::isDirectory($dir)||!File::exists($dir)){
+                File::makeDirectory($dir,  $mode = 0777, $recursive = false);
+            }
+            $this->line($dir);
+            File::copy($patt, resource_path('views/SmkVendor/Excel/Index.blade.php'));
         } else {
             $this->error("your laravel version is less than 5.3,please upgrade");
         };
     }
 
     private function mkdir($path){
-        $p = explode('/',$path);
+        $p = explode('/views',$path);
         $yy = "";
         foreach ($p as $key=>$x){
             if($key==0){
-                $yy.=$x;
+                $yy.=$x.'/views';
             }else{
-                $yy.='/'.$x;
+                $mm = explode('/',$x);
+                foreach ($mm as $kk=>$m){
+                    if($kk==0){
+                        $yy.=$m;
+                    }else{
+                        $yy.='/'.$m;
+                    }
+                }
+                $this->line($yy);
+                if(!File::isDirectory($yy)||!File::exists($yy)){
+                    File::makeDirectory($yy,  $mode = 0777, $recursive = false);
+                }
             }
-            $this->line($yy);
-            if(!File::isDirectory($yy)||!File::exists($yy)){
-                File::makeDirectory($yy,  $mode = 0777, $recursive = false);
-            }
+
         }
     }
 
