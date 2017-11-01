@@ -108,7 +108,23 @@ class SmkExcel extends Controller
                                 //开始进入验证规则
                                 if (!empty($d->self_verify)) {
                                     //如果这个字段开启了自定义规则则交给调用方自定义验证
-                                    dump("准备让调用方自动验证");
+                                    $self_ver_data = $this->ajax($d->self_verify,[$d->id=>$ex]);
+                                    $self_ver_data = json_decode($self_ver_data);
+                                    if ($self_ver_data->code != 0) {
+                                        $ex_datax['msg'] = $self_ver_data->msg;
+                                        foreach ($data as $d) {
+                                            if ($d->id == $self_ver_data->id) {
+                                                foreach ($relation as $r) {
+                                                    if ($r->b == $self_ver_data->id) {
+                                                        $ex_datax['key'] = $r->a;
+                                                    }
+                                                }
+                                            };
+                                        }
+                                        $x = array($ex_datax);
+                                        $err_array->push($x);
+                                        break;
+                                    }
                                 } else {
                                     $ex_datax = array('arr' => $ex_data, 'key' => $ex_key);
                                     //是否为空
