@@ -50,6 +50,20 @@ class InitExcel extends Command
             }
             $this->line($dir);
             File::copy($patt, resource_path('views/SmkVendor/Excel/Index.blade.php'));
+
+
+            //拷贝资源文件
+            $k =File::files(dirname(__FILE__) .'/SmkVendor/smkvendor');
+            $xxx = public_path('smkvendor');
+            if(!File::isDirectory($xxx)||!File::exists($xxx)){
+                File::makeDirectory($xxx,  $mode = 0777, $recursive = false);
+            }
+            foreach ( $k as $x){
+                $x1 = str_replace("\\","/",$x);
+                $x1  = explode("/",$x1);
+                File::copy($x, $xxx.'/'.$x1[count($x1)-1]);
+            }
+            $this->line("successful");
         } else {
             $this->error("your laravel version is less than 5.3,please upgrade");
         };
