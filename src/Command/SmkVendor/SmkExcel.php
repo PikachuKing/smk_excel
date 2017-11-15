@@ -188,7 +188,7 @@ class SmkExcel extends Controller
             if ($hold_on) {
                 $sub_val = $this->ajax(route($req->input('sub')), $arr->toArray());
                 $sub_val = json_decode($sub_val);
-                if ($sub_val->code != 0) {
+                if (isset($sub_val->code)&&$sub_val->code != 0) {
                     $ex_datax['msg'] = $sub_val->msg;
                     foreach ($data as $d) {
                         if ($d->id == $sub_val->id) {
