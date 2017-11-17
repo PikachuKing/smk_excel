@@ -246,6 +246,8 @@
             $('#go_download_excel').hide();
             $(this).ajaxSubmit({
                 success: function (msg) {
+                    $('#fs').val("");
+                    $('.resetCanvasBtn').click();
                     if (msg.code != 0) {
                         alert(msg.msg);
                         var h = "<span style='color: red'>导入失败:"+msg.msg+"</span>";
@@ -299,7 +301,7 @@
 <script type="text/javascript">
 
 
-    function creatline(box) {//===========createfun
+    function creatline(box) {
         var linewidth = 1, linestyle = "#393a3a";//连线绘制--线宽，线色
         //初始化赋值 列表内容
         box.find(".showleft").children("span").each(function (index, element) {

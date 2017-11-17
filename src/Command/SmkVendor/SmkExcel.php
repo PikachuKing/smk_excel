@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Request as r;
 use File;
 use App;
+use Log;
 
 class SmkExcel extends Controller
 {
@@ -16,6 +17,8 @@ class SmkExcel extends Controller
 
     public function index(Request $req)
     {
+        //dump($req->session()->all());
+        //dump($req->cookie('laravel_session'));
         $config_url = $req->input('route', null);
         $sub_url = $req->input('subroute', null);
         if (null == $config_url) {
@@ -65,6 +68,7 @@ class SmkExcel extends Controller
         $url = $req->input('cfg_url');//获取参数的url
         $relation = json_decode($req->input('ax'));//获取用户选择的关联
 
+        //Log::info($req->all());
 
         $data = json_decode($this->ajax(route($url)));//获取调用方的配置
         $dx2 = collect($data);
@@ -86,7 +90,7 @@ class SmkExcel extends Controller
         $reader = Excel::selectSheetsByIndex(0)->load($xsl);
         $reader->setDateFormat('Y-m-d H:i:s');
         $excel_data = $reader->all()->toArray();
-
+        //Log::info($excel_data);
         //按照用户选定的关联开始解析数据
         $data_for_return = array();//定义需要返回的数组
         $err_array = collect(); //定义一个报错的错误数组,所有有问题的数据都存入这个数组
@@ -188,6 +192,8 @@ class SmkExcel extends Controller
             if ($hold_on) {
                 $sub_val = $this->ajax(route($req->input('sub')), $arr->toArray());
                 $sub_val = json_decode($sub_val);
+
+
                 if (isset($sub_val->code)&&$sub_val->code != 0) {
                     $ex_datax['msg'] = $sub_val->msg;
                     foreach ($data as $d) {
@@ -238,12 +244,12 @@ class SmkExcel extends Controller
                     $sheet->fromArray($all_err);
                 });
             })->store('xls');
-            $file = storage_path('exports\\') . $time . '.xls';
-            $pt = public_path('smktest\\');
+            $file = storage_path('exports/') . $time . '.xls';
+            $pt = public_path('smktest/');
             if (!File::isDirectory($pt)) {
                 File::makeDirectory($pt, $mode = 0777, $recursive = false);
             }
-            $pt = public_path('smktest\excel\\');
+            $pt = public_path('smktest/excel/');
             if (!File::isDirectory($pt)) {
                 File::makeDirectory($pt, $mode = 0777, $recursive = false);
             }
@@ -281,10 +287,14 @@ class SmkExcel extends Controller
 
     private function ajax($url, $data = null)
     {
-        $u = new cURL();
-        $n = $u->post($url, $data);
-        $n = $n->body;
-        return $n;
+        $curl = new cURL();
+        $request = $curl->newRequest('post', $url, $data)
+            ->setHeader('Accept-Charset', 'utf-8')
+            ->setHeader('Accept-Language', 'en-US')
+            ->setOption(CURLOPT_TIMEOUT,10)
+            ->setCookies($_COOKIE);
+        $response = $request->send()->body;
+        return $response;
     }
 
 }
