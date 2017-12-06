@@ -41,18 +41,18 @@ class InitExcel extends Command
 
         //拷贝视图
         $patt = dirname(__FILE__) . '/SmkVendor/Index.blade.php';
-        $dir = resource_path('views/SmkVendor');
+        $dir = base_path('resources/views/SmkVendor');
 
         if (!File::isDirectory($dir) || !File::exists($dir)) {
             File::makeDirectory($dir, $mode = 0777, $recursive = false);
         }
         $this->line($dir);
-        $dir = resource_path('views/SmkVendor/Excel');
+        $dir = base_path('resources/views/SmkVendor/Excel');
         if (!File::isDirectory($dir) || !File::exists($dir)) {
             File::makeDirectory($dir, $mode = 0777, $recursive = false);
         }
         $this->line($dir);
-        File::copy($patt, resource_path('views/SmkVendor/Excel/Index.blade.php'));
+        File::copy($patt, base_path('resources/views/SmkVendor/Excel/Index.blade.php'));
 
 
         //拷贝资源文件
