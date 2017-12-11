@@ -19,6 +19,8 @@ class RouteTemp
         Route::any('importexcel/index','SmkExcel@index')->name('smk_vender_excel_index');
         Route::any('importexcel/subexcel','SmkExcel@sub_excel')->name('smk_vender_excel_sub_excel');
         Route::any('importexcel/resolution','SmkExcel@resolution')->name('smk_vender_excel_resolution');
+        Route::any('exportexcel/index','SmkExcel@exportIndex')->name('smk_vender_excel_export_index');
+        Route::any('exportexcel/export','SmkExcel@export')->name('smk_vender_excel_export');
     });";
         return $route;
     }
