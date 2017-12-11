@@ -10,10 +10,12 @@ use Request as r;
 use File;
 use App;
 use Log;
+use Cache;
 
 class SmkExcel extends Controller
 {
     const view_path = 'SmkVendor.Excel.';
+    const cache_key = 'excel_export_data';
 
     public function index(Request $req)
     {
@@ -261,6 +263,102 @@ class SmkExcel extends Controller
         //最后删除掉这个excel
         File::delete($xsl);
         return $this->bk_json($err_array);
+    }
+
+    public function exportIndex(Request $request){
+        $config_url = $request->input('route', null);
+        $more = $request->input('more', null);
+        if (null == $config_url || null == $more) {
+            dd('配置信息错误,请参见调用文档');
+        }
+        $data = (array)json_decode($this->ajax(route($config_url)));
+        Cache::forever(self::cache_key, $data);
+        if ($more == md5(1)) {
+            $data = current($data);
+        }
+        if (is_array($data) && count($data)>1) {
+            $pam = array(
+                'data' => array_slice($data,0,2),
+                'more' => $more,
+            );
+            return $this->see_View('Export', $pam);
+        }else{
+            dd('配置信息错误,请参见调用文档');
+        }
+    }
+
+    public function export(Request $request){
+        try{
+            $filed_arr = $request->input('filed');
+            $file_name = $request->input('file_name');
+            if (empty($file_name)) {
+                $errorCode = 1;
+                $errorMsg = '请给文件命一个名字';
+            }else{
+                if (empty($filed_arr)) {
+                    $errorCode = 1;
+                    $errorMsg = '至少选择一个要导出的字段';
+                }
+                else{
+                    $more = $request->input('more');
+                    $rename_arr = $request->input('rename');
+                    $excel_arr = Cache::get(self::cache_key);
+                    $file_path = 'excel/exports/'.time().uniqid().'/';
+                    $name = $file_name;
+                    foreach ($excel_arr as $k=>$data) {
+                        foreach ($data as $key=>$val) {
+                            if ($k == 0 && (isset($rename_arr[$key])&&!empty(trim($rename_arr[$key])))) {
+                                $excel_arr[$k][$key] = $rename_arr[$key];
+                            }
+                            if (!in_array($key, $filed_arr)) {
+                                unset($excel_arr[$k][$key]);
+                            }
+                        }
+                    }
+
+                    if (!empty($excel_arr)) {
+                        Excel::create($name, function ($excel) use ($excel_arr, $more) {
+                            if ($more == md5(1)) {
+                                foreach ($excel_arr as $k=>$v) {
+                                    $excel->sheet($k, function ($sheet) use ($v) {
+                                        $sheet->setAutoSize(false);
+                                        $sheet->cells(1, function ($row) {
+                                            $row->setAlignment('center');
+                                            $row->setFontWeight('bold');
+                                        });
+                                        $sheet->rows($v);
+                                    });
+                                }
+                            }else{
+                                $excel->sheet('sheet', function ($sheet) use ($excel_arr) {
+                                    $sheet->setAutoSize(false);
+                                    $sheet->cells(1, function ($row) {
+                                        $row->setAlignment('center');
+                                        $row->setFontWeight('bold');
+                                    });
+                                    $sheet->rows($excel_arr);
+                                });
+                            }
+                        })->store('xls', public_path($file_path));
+                        //})->export('xls');
+                        $errorCode = 0;
+                        $errorMsg = $file_path.$name.'.xls';
+                    }else{
+                        $errorCode = 1;
+                        $errorMsg = '系统配置出错';
+                    }
+                }
+            }
+        }catch (Exception $e){
+            $errorCode = 1;
+            $errorMsg = '系统错误';
+        }
+
+        $pam = array(
+            'errorCode' => $errorCode,
+            'errorMsg' => $errorMsg
+        );
+        return response()->json($pam);
     }
 
     private function see_View($page, $data = null)
