@@ -1,8 +1,8 @@
 ## Smk_Excel
-用户导入Excel,要求laravel版本最低:5.3
+用户导入导出Excel,要求laravel版本最低:5.1
 
 
-# 导入方法
+# 引入方法
 ###
 1.1:首先引入laravel Excel包(注意依次执行):
 ``` bash
@@ -31,6 +31,8 @@ php artisan excel:init
 ```
 
 # 使用方法
+**一.导入**
+
 1:你需要自定义一个路由返回你需要导入的数组:
 ``` bash
  $p = array();
@@ -55,3 +57,37 @@ php artisan excel:init
 ``` bash
 $val = $req->input('id');//此处的ID为你定义的唯一ID
 ```
+**二.导出**
+
+你需要路由'smk_vender_excel_export_index'这个上面去，然后你还传递两个参数
+
+1.你自定义得返回数据得路由，参数名字：route，返回得数据格式如下
+
+
+       $title = array(
+           '学号','姓名','手机号码','性别','院系','专业名称'
+       );
+
+       $data[] = $title;
+       $data[] = array(
+           '10011','张三','15708442244','男','计算机学院','软件技术'
+       );
+       $data[] = array(
+           '10012','李四','15708442245','男','计算机学院','软件技术'
+       );
+       $data1[] = $title;
+       $data1[] = array(
+           '10011','张三','15708442244','女','计算机学院','软件技术'
+       );
+       $data1[] = array(
+           '10012','李四','15708442245','女','计算机学院','软件技术'
+       );
+       $p ['一班'] = $data;
+       $p ['二班'] = $data1;
+       return response()->json($p);
+       
+2.参数名字more，意思是是否导出多个sheet表格。
+
+       route('smk_vender_excel_export_index',['route'=>'TestGetData','more'=>md5(1)])
+       
+上面就是传递参数的形式，more用md5转换一次
