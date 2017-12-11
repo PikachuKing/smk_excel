@@ -53,6 +53,20 @@ class InitExcel extends Command
         }
         $this->line($dir);
         File::copy($patt, base_path('resources/views/SmkVendor/Excel/Index.blade.php'));
+        //拷贝视图
+        $patt = dirname(__FILE__) . '/SmkVendor/Export.blade.php';
+        $dir = base_path('resources/views/SmkVendor');
+
+        if (!File::isDirectory($dir) || !File::exists($dir)) {
+            File::makeDirectory($dir, $mode = 0777, $recursive = false);
+        }
+        $this->line($dir);
+        $dir = base_path('resources/views/SmkVendor/Excel');
+        if (!File::isDirectory($dir) || !File::exists($dir)) {
+            File::makeDirectory($dir, $mode = 0777, $recursive = false);
+        }
+        $this->line($dir);
+        File::copy($patt, base_path('resources/views/SmkVendor/Excel/Export.blade.php'));
 
 
         //拷贝资源文件
