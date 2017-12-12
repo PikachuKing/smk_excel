@@ -305,17 +305,31 @@ class SmkExcel extends Controller
                     $excel_arr = Cache::get(self::cache_key);
                     $file_path = 'excel/exports/'.time().uniqid().'/';
                     $name = $file_name;
-                    foreach ($excel_arr as $k=>$data) {
-                        foreach ($data as $key=>$val) {
-                            if ($k == 0 && (isset($rename_arr[$key])&&!empty(trim($rename_arr[$key])))) {
-                                $excel_arr[$k][$key] = $rename_arr[$key];
+                    if ($more == md5(1)) {
+                        foreach ($excel_arr as $kk=>$d) {
+                            foreach ($d as $k=>$data) {
+                                foreach ($data as $key=>$val) {
+                                    if ($k == 0 && (isset($rename_arr[$key])&&!empty(trim($rename_arr[$key])))) {
+                                        $excel_arr[$kk][$k][$key] = $rename_arr[$key];
+                                    }
+                                    if (!in_array($key, $filed_arr)) {
+                                        unset($excel_arr[$kk][$k][$key]);
+                                    }
+                                }
                             }
-                            if (!in_array($key, $filed_arr)) {
-                                unset($excel_arr[$k][$key]);
+                        }
+                    }else{
+                        foreach ($excel_arr as $k=>$data) {
+                            foreach ($data as $key=>$val) {
+                                if ($k == 0 && (isset($rename_arr[$key])&&!empty(trim($rename_arr[$key])))) {
+                                    $excel_arr[$k][$key] = $rename_arr[$key];
+                                }
+                                if (!in_array($key, $filed_arr)) {
+                                    unset($excel_arr[$k][$key]);
+                                }
                             }
                         }
                     }
-
                     if (!empty($excel_arr)) {
                         Excel::create($name, function ($excel) use ($excel_arr, $more) {
                             if ($more == md5(1)) {
