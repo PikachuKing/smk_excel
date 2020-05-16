@@ -1,5 +1,5 @@
 {
-    "name": "lky_vendor/smk_excel",
+    "name": "smk/smk_excel",
     "type": "library",
     "description": "Import Excel to database",
     "keywords": [
