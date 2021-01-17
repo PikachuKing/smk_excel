@@ -6,8 +6,6 @@
 ###
 1.1:首先引入laravel Excel包(注意依次执行):
 ``` bash
-composer require maatwebsite/excel ~2.0.0;
-composer require anlutro/curl;
 composer require lky_vendor/smk_excel dev-master;
 ```
 ### 
@@ -29,7 +27,10 @@ lky_vendor\smk_excel\excelServiceProvider::class,
 php artisan vendor:publish --provider="Maatwebsite\Excel\ExcelServiceProvider";
 php artisan excel:init
 ```
-
+   'excel' => [
+            'driver' => 'local',
+            'root' => public_path('excel/exports/'),
+        ],
 # 使用方法
 **一.导入**
 

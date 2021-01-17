@@ -7,46 +7,16 @@
     <link rel="icon" href="../../favicon.ico">
     <title>Excel导入导出</title>
     <!-- Bootstrap core CSS -->
-    <link href="{{asset('smkvendor/bootstrap.min.css')}}" rel="stylesheet">
+<!-- <link href="{{asset('smkvendor/bootstrap.min.css')}}" rel="stylesheet"> -->
+    <link href="{{asset('smkvendor/materialize.css')}}" rel="stylesheet">
+    <link href="{{asset('smkvendor/import.css')}}" rel="stylesheet">
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <style>
-        .checkbox-custom input[type="checkbox"] {
-            background-color: white;
-            border-radius: 5px;
-            border: 1px solid #d3d3d3;
-            width: 20px;
-            height: 20px;
-            display: inline-block;
-            text-align: center;
-            vertical-align: bottom;
-            line-height: 20px;
-        }
-        .checkbox-custom {
-            position: relative;
-            padding: 0 0 0 25px;
-            margin-bottom: 7px;
-            margin-top: 0;
-        }
-        .clearfix:after {
-            content: ".";
-            display: block;
-            height: 0;
-            clear: both;
-            overflow: hidden;
-        }
-        .clearfix {
-            zoom: 1;
-        }
-        .show {
-            position: relative;
-            width: 540px;
-            margin: 40px 100px;
-            cursor: pointer;
-        }
         .canvas {
             position: absolute;
             left: 0px;
@@ -59,120 +29,109 @@
             top: 0px;
             z-index: -2;
         }
-        .showleft {
-            float: left;
-            width: 152px;
+        .showleft span{display: block; }
+        .showright span{display: block;}
+        #import-result{
+            overflow-x: auto;
         }
-        .showright {
-            float: right;
-            width: 152px;
-        }
-        .show .showitem {
-            width: 100px;
-            display: block;
-            border-radius: 15px;
-            padding: 10px;
-        }
-        .tools {
-        }
-        .tools div {
-            float: right;
-            height: 30px;
-            padding: 0 5px;
-            margin: 0 5px;
-            color: #060707;
-            cursor: pointer;
-            line-height: 30px;
-        }
-        .tools div:hover {
-            color: #C30;
-        }
-        .tools .goBackBtn {
-            color: #aaa39f;
-        }
-        .tools .resetCanvasBtn {
-            color: #aaa39f;
-        }
-        .showleft .showitem {
-            color: #aaa39f;
-            font-size: 18px;
-        }
-        .showright .showitem {
-            color: #aaa39f;
-            font-size: 18px;
-        }
-        .showright .showitem p {
-            top: -76px;
-            left: 107px;;
+        #import-result td,#import-result th {
+            text-align: center;
+            verflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
     </style>
 </head>
 <body>
-
-<div class="container">
-
-    <div class="blog-header">
-        <h1 class="blog-title">Excel导入</h1>
-        <p class="lead blog-description">http://www.cdsmartlink.com</p>
+<nav class="bg-blue">
+    <div class="nav-wrapper container head">
+        <div class="pull-left">【Excel导入工具】V1.0版</div>
+        <div class="tech pull-right">技术支持</div>
+    </div>
+</nav>
+<div class="container row">
+    <h5  class="light-blue-text darken-2 col s12 p0"  > 成都慧联客信息技术>导入数据</h5>
+    <h6 class=" col s12 p0">
+        该工具由
+        <a href="http://www.cdsmartlink.com" class=" light-blue-text darken-2">成都慧联客信息技术</a>
+        提供
+    </h6>
+    <div id="select-file" class="col s10 p0">
+        <form enctype="multipart/form-data" class="form-inline" id="fm" method="post"
+              action="{{route('smk_vender_excel_sub_excel')}}">
+            <div class="select-input col s7">
+                <input type="text" readonly class="col s12" id="show">
+            </div>
+            <div class="select-btn col s2" id="chose" >
+                选择EXCEL
+            </div>
+            <div class="submit-btn col s2 offset-s1" id="start_sub">
+                上传
+            </div>
+            <input type="file" id="fs" name="excel" style="display: none"
+                   accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        </form>
     </div>
 
-    <div class="row">
-        <div class="col-sm-8 blog-main">
-            <div class="blog-post">
-                <div class="row">
-                    <form enctype="multipart/form-data" class="form-inline" id="fm" method="post"
-                          action="{{route('smk_vender_excel_sub_excel')}}">
-                        <div class="form-group">
-                            <input type="text" readonly class="form-control" id="show"
-                                   style="width: 380px;margin-left:15px;">
-                        </div>
-                        <button type="button" class="btn btn-default" id="chose">选择Excel</button>
-                        <button type="button" class="btn btn-default" id="start_sub">上传Excel</button>
-                        <input type="file" id="fs" name="excel" style="display: none"
-                               accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-                    </form>
+    <div id="field" class="col s10 p0 mt15 ">
+        <div class="field-header plr15">
+            <div class="field-header-left">
+                <div class="tips">
+                    请通过连线匹配相应数据字段
                 </div>
-                <hr>
-                <span style="font-size: 20px;color: #aaa39f">请拉动选择对应的数据信息</span>
-                <div class="demo1" style="border: 1px solid #eee">
-                    <div class="show clearfix">
-                        <div class="showleft" id="data_excel"><!--左侧-->
-                        </div>
-                        <div class="showright"><!--右侧-->
-                            @if(isset($cfg)&&is_array($cfg))
-                                @foreach($cfg as $c)
-                                    <span class="showitem" smkval="{{$c->id}}">{{$c->chinese}}</span>
-                                @endforeach
-                            @endif
-                        </div>
-                        <canvas class="canvas"></canvas><!--连线画布-->
-                        <canvas class="backcanvas"></canvas><!--提示线画布-->
-                    </div>
-                    <div class="tools">
-                        <!--<div class="downloadImageBtn">下载</div>-->
-                        <div class="goBackBtn">撤销</div>
-                        <div class="resetCanvasBtn">重置</div>
-                        <div class="saveImageBtn" style="color: #aaa39f;">开始导入</div>
-                    </div>
+            </div>
+            <div class="field-header-right tools">
+                <div>
+                    <img src="{{asset('smkvendor/images/i1.png')}}" alt="" style="display: none;">
+                </div>
+                <div class="operate" style="display: none;">
+                    回退
+                </div>
+                <div>
+                    <img src="{{asset('smkvendor/images/i2.png')}}" alt="">
+                </div>
+                <div class="operate resetCanvasBtn">
+                    重置
+                </div>
+                <div>
+                    <img src="{{asset('smkvendor/images/i3.png')}}" alt="">
+                </div>
+                <div class="operate goBackBtn">
+                    撤销
+                </div>
+                <div class="sort-btn" style="display: none;">
+                    一键排序
                 </div>
             </div>
         </div>
-
-
-
-    </div>
-
-    <div >
-        <div class="sidebar-module">
-            <h4>导入结果<a id="go_download_excel" style="padding-left: 30px;cursor: pointer;display: none">下载未导入成功的结果</a></h4>
-            <hr>
-            <div id="result">
-
+        <div class="demo1" >
+            <div class="show clearfix">
+                <div class="showleft" id="data_excel" ><!--左侧-->
+                </div>
+                <div class="showright"><!--右侧-->
+                    @if(isset($cfg)&&is_array($cfg))
+                        @foreach($cfg as $c)
+                            <span class="showitem" smkval="{{$c->id}}">{{$c->chinese}}</span>
+                        @endforeach
+                    @endif
+                </div>
+                <canvas class="canvas"></canvas><!--连线画布-->
+                <canvas class="backcanvas"></canvas><!--提示线画布-->
             </div>
         </div>
+        <div class="field-footer">
+            <div class="start-import saveImageBtn">开始导入</div>
+        </div>
     </div>
+    <div id="import-result" class="col s10 p0">
+        <div class="result-tips">
+            <span>导入结果</span>
+            <a id="go_download_excel" style="display: none;">下载未导入成功结果</a>
+        </div>
+        <table class="bordered centered" id="result">
 
-
+        </table>
+    </div>
 </div>
 <form id="start_resolution" action="{{route('smk_vender_excel_resolution')}}" method="post">
     <input type="hidden" id="ax" name="ax">
@@ -187,6 +146,7 @@
 
 <script type="text/javascript" src="{{asset('smkvendor/bootstrap.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('smkvendor/jquery.form.js')}}"></script>
+<script src="{{ asset('smkvendor/layer/layer.js')}}"></script>
 <script>
 
     var file = "";
@@ -222,15 +182,21 @@
             $(this).ajaxSubmit({
                 success: function (msg) {
                     if (msg.code != 0) {
-                        alert(msg.msg);
+                        layer.msg(msg.msg);
                         return;
                     } else {
-                        var h = "";
-                        for (var i in msg.data.data) {
+                        layer.msg('上传成功');
+                        var h = "",data=msg.data.data;
+                        for (var i=0;i<data.length;i++) {
+                            if (data[i] != 'null') {
+                                h += '<span class="showitem" smkval="'+data[i]+'">' + data[i] + '</span>';
+                            }
+                        }
+                        /*for (var i in msg.data.data) {
                             if (msg.data.data[i] != "null") {
                                 h += '<span class="showitem" smkval="'+msg.data.data[i]+'">' + msg.data.data[i] + '</span>';
                             }
-                        }
+                        }*/
                         file = msg.data.file;
                         $('#data_excel').html(h);
                         creatline($(".demo1"));
@@ -248,38 +214,45 @@
                 success: function (msg) {
                     $('#fs').val("");
                     $('.resetCanvasBtn').click();
+                    //$('#data_excel').empty();
                     if (msg.code != 0) {
-                        alert(msg.msg);
+                        layer.msg(msg.msg);
                         var h = "<span style='color: red'>导入失败:"+msg.msg+"</span>";
                         $('#result').html(h);
                         return;
                     } else {
+                        //W(msg);
+                        $('#data_excel').empty();
                         if(msg.data.length>0){
                             var h = "<table style='width: 100%'><tr>";
 
                             for(var i in msg.data[0][0].arr){
-                                h+="<th>"+i+"</th>";
+                                h+="<th>"+msg.data[0][0].arr[i]+"</th>";
                             }
                             h+="</tr>";
                             for(var i in msg.data){
+                                if(i == 0) continue;
                                 h+='<tr>'
-                               for(var k in msg.data[i][0].arr){
-                                   h+='<td>'+msg.data[i][0].arr[k];
-                                   for(var myl in msg.data[i]){
-                                       if(k==msg.data[i][myl].key){
-                                           h+='<span style="color: red">('+msg.data[i][myl].msg+')</span>'
-                                       }
-                                   }
-                                   h+="</td>";
-                               }
+                                if (typeof (msg.data[i][0]) == 'object') {
+                                    for(var k in msg.data[i][0].arr){
+                                        h+='<td>'+msg.data[i][0].arr[k];
+                                        for(var myl in msg.data[i]){
+                                            if(k==msg.data[i][myl].key){
+                                                h+='<span style="color: red">('+msg.data[i][myl].msg+')</span>'
+                                            }
+                                        }
+                                        h+="</td>";
+                                    }
+                                }
                                 h+='</tr>'
                             }
                             h+="</table>"
                             $('#result').html(h);
-                            $('#go_download_excel').attr("href","/"+msg.path);
-                            alert("导入完成,请修改有问题的数据之后重新导入");
+                            $('#go_download_excel').attr("href", msg.path);
+                            layer.msg("导入完成,请修改有问题的数据之后重新导入");
                             $('#go_download_excel').show();
                         }else{
+                            layer.msg('导入成功');
                             var h = "<span>导入成功</span>";
                             $('#result').html(h);
                         }
@@ -292,6 +265,7 @@
 
     })
 
+
     function W(obj) {
         console.log(obj);
     }
@@ -301,7 +275,7 @@
 <script type="text/javascript">
 
 
-    function creatline(box) {
+    function creatline(box) {//===========createfun
         var linewidth = 1, linestyle = "#393a3a";//连线绘制--线宽，线色
         //初始化赋值 列表内容
         box.find(".showleft").children("span").each(function (index, element) {
@@ -360,7 +334,7 @@
             mid_starty = $(this).attr("top");
             event.preventDefault();
         });
-        $(document).mousemove(function (event) {		//移动
+        $(document).mousemove(function (event) {        //移动
             var $target = $(event.target);
             if (groupstate) {
                 mid_endx = event.pageX - box.find(".show").offset().left;
@@ -647,19 +621,20 @@
             mid_endy = null;
         };
         //重置
-        box.find(".resetCanvasBtn").click(function () {
-        ax.splice(0,ax.length);
+        $('#field').find(".resetCanvasBtn").click(function () {
+            ax.splice(0,ax.length);
             clearline();
         });
         //预览和保存操作
-        box.find(".saveImageBtn").click(function () {
-        $('#ax').val(JSON.stringify(ax));
-        $('#fx').val(file);
+        $('#field').find(".saveImageBtn").click(function () {
+            $('#ax').val(JSON.stringify(ax));
+            $('#fx').val(file);
             $('#start_resolution').submit();
         });
 
         //回退
-        box.find(".goBackBtn").click(function () {
+        $('#field').find(".goBackBtn").click(function () {
+            console.log(1111);
             ax.pop();
             goBack();
         });

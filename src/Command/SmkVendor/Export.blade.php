@@ -40,7 +40,7 @@
     </div>
 </nav>
 <div class="container row">
-    <h5  class="light-blue-text darken-2 col s12 p0"  >讯安实习>导出数据</h5>
+    <h5  class="light-blue-text darken-2 col s12 p0"  >成都慧联客信息技术>导出数据</h5>
     <h6 class=" col s12 p0">
         该工具由
         <a href="http://www.cdsmartlink.com" class=" light-blue-text darken-2">成都慧联客信息技术</a>
@@ -76,6 +76,10 @@
             <div class="demo1">
                 <form id="export-form" method="post" action="{{route('smk_vender_excel_export')}}">
                     <input type="hidden" name="more" value="{{isset($more)?$more:''}}">
+                    <input type="hidden" name="config_url" value="{{isset($config_url)?$config_url:''}}">
+                    <input type="hidden" name="export_id" value="{{isset($export_id)?$export_id:''}}">
+                    <input type="hidden" name="time" value="{{isset($time)?$time:''}}">
+                    <input type="hidden" name="member_id" value="{{isset($member_id)?$member_id:''}}">
                     <div class="show clearfix">
                         @if(isset($data[0])&&!empty($data[0]))
                             @foreach($data[0] as $k=>$v)

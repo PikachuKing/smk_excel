@@ -39,6 +39,20 @@ class InitExcel extends Command
         }
         File::copy($patt, app_path('Http/Controllers/SmkVendor/SmkExcel.php'));
 
+        $patt = dirname(__FILE__) . '/SmkVendor/Export.php';
+        $dir = app_path('Http/Controllers/SmkVendor');
+        if (!File::isDirectory($dir) || !File::exists($dir)) {
+            File::makeDirectory($dir, $mode = 0777, $recursive = false);
+        }
+        File::copy($patt, app_path('Http/Controllers/SmkVendor/Export.php'));
+
+        $patt = dirname(__FILE__) . '/SmkVendor/Import.php';
+        $dir = app_path('Http/Controllers/SmkVendor');
+        if (!File::isDirectory($dir) || !File::exists($dir)) {
+            File::makeDirectory($dir, $mode = 0777, $recursive = false);
+        }
+        File::copy($patt, app_path('Http/Controllers/SmkVendor/Import.php'));
+
         //拷贝视图
         $patt = dirname(__FILE__) . '/SmkVendor/Index.blade.php';
         $dir = base_path('resources/views/SmkVendor');
@@ -81,8 +95,8 @@ class InitExcel extends Command
             File::copy($x, $xxx . '/' . $x1[count($x1) - 1]);
         }
         $this->line("successful");
-
     }
+
 
     private function write($path, $content, $is_append = false)
     {
