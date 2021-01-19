@@ -227,11 +227,10 @@
                             var h = "<table style='width: 100%'><tr>";
 
                             for(var i in msg.data[0][0].arr){
-                                h+="<th>"+msg.data[0][0].arr[i]+"</th>";
+                                h+="<th>"+i+"</th>";
                             }
                             h+="</tr>";
                             for(var i in msg.data){
-                                if(i == 0) continue;
                                 h+='<tr>'
                                 if (typeof (msg.data[i][0]) == 'object') {
                                     for(var k in msg.data[i][0].arr){
