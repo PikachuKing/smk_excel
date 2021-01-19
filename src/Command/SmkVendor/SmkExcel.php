@@ -91,12 +91,11 @@ class SmkExcel extends Controller
 //        $excel_data = $reader->all()->toArray();
         $excel_data = (new Import)->toArray($xsl);
         $excel_data = $excel_data[0];
-        //Log::info($excel_data);
         //按照用户选定的关联开始解析数据
         $data_for_return = array();//定义需要返回的数组
         $err_array = collect(); //定义一个报错的错误数组,所有有问题的数据都存入这个数组
-
         foreach ($excel_data as $excel_data_key => $ex_data) {
+            $ex_data = array_combine($excel_data[0], $ex_data);
             //$ex_data为每一行的所有数据
             $hold_on = true;
             $arr = collect();
@@ -189,7 +188,7 @@ class SmkExcel extends Controller
             if (count($xxx) > 0) {
                 $err_array->push($xxx);
             }
-            if ($hold_on) {
+            if ($hold_on && $excel_data_key != 0) {
                 $sub_val = $this->ajax(route($req->input('sub')), $arr->toArray());
                 $sub_val = json_decode($sub_val);
 
@@ -200,7 +199,7 @@ class SmkExcel extends Controller
                         if ($d->id == $sub_val->id) {
                             foreach ($relation as $r) {
                                 if ($r->b == $sub_val->id) {
-                                    $ex_datax['key'] = $r->b;
+                                    $ex_datax['key'] = $r->a;
                                 }
                             }
                         };
@@ -249,9 +248,9 @@ class SmkExcel extends Controller
 //                });
 //            })->store('xls');
 
-            $file =  'error/'.$time . '.xls';
+            $file = 'error/' . $time . '.xls';
             Excel::store(new Export($title), $file, 'excel');
-            $path = '/excel/exports/'.$file;
+            $path = '/excel/exports/' . $file;
             $err_array = $err_array->toArray();
             File::delete($xsl);
             return $this->bk_json($err_array, 0, "successful", ['excel' => $time, 'path' => $path]);
@@ -267,9 +266,8 @@ class SmkExcel extends Controller
         if (null == $config_url) {
             dd('配置信息错误,请参见调用文档');
         }
-        $data = (array)json_decode($this->ajax(route($config_url)));
+        $data = (array)json_decode($this->ajax(route($config_url, ['id' => $request->more])));
         Cache::forever(self::cache_key, $data);
-
         if (is_array($data) && count($data) > 1) {
             $pam = array(
                 'data' => array_slice($data, 0, 2),
@@ -295,7 +293,7 @@ class SmkExcel extends Controller
                 } else {
                     $rename_arr = $request->input('rename');
                     $excel_arr = Cache::get(self::cache_key);
-                    $file_path =  time() . uniqid() . '/';
+                    $file_path = time() . uniqid() . '/';
                     $name = $file_name;
 
                     foreach ($excel_arr as $k => $data) {
@@ -311,9 +309,9 @@ class SmkExcel extends Controller
 
                     if (!empty($excel_arr)) {
                         $export = new Export($excel_arr);
-                        Excel::store($export, $file_path.$name . '.xls', 'excel');
+                        Excel::store($export, $file_path . $name . '.xls', 'excel');
                         $errorCode = 0;
-                        $errorMsg = 'excel/exports/'.$file_path . $name . '.xls';
+                        $errorMsg = 'excel/exports/' . $file_path . $name . '.xls';
                     } else {
                         $errorCode = 1;
                         $errorMsg = '系统配置出错';
